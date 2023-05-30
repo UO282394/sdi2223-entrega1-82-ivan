@@ -1,9 +1,6 @@
 package com.uniovi.sdi2223entrega182.services;
 
-import com.uniovi.sdi2223entrega182.entities.Conversation;
-import com.uniovi.sdi2223entrega182.entities.Message;
-import com.uniovi.sdi2223entrega182.entities.Offer;
-import com.uniovi.sdi2223entrega182.entities.User;
+import com.uniovi.sdi2223entrega182.entities.*;
 import com.uniovi.sdi2223entrega182.repositories.ConversationRepository;
 import com.uniovi.sdi2223entrega182.repositories.MessageRepository;
 import com.uniovi.sdi2223entrega182.repositories.OffersRepository;
@@ -29,6 +26,8 @@ public class ConversationServices {
     private OffersRepository offersRepository;
     @Autowired
     private MessageRepository messageRepository;
+    @Autowired
+    private LogService logService;
     private static final Logger logger = LoggerFactory.getLogger(SecurityService.class);
 
     public Conversation getConversation(Offer offer, User actualUser) {
@@ -43,7 +42,9 @@ public class ConversationServices {
                   conversationsRepository.deleteById(c.getId());
                   return null;
               }
-            logger.info(String.format("Conversation created"));
+            logger.info(String.format("Entrando en conversación"));
+            Log log = new Log("PET","CONVERSATION CONTROLLER GET", new Date());
+            logService.addLog(log);
 
         }
 
@@ -76,7 +77,9 @@ public class ConversationServices {
         if(!c.getCreatorConver().getEmail().equals(u.getEmail())&&!c.getCreatorOffer().getEmail().equals(u.getEmail())){
             return null;
         }
-        logger.info(String.format("Conversation opened"));
+        logger.info(String.format("Entrando en conversación"));
+        Log log = new Log("PET","CONVERSATION CONTROLLER GET", new Date());
+        logService.addLog(log);
         return c;
 
     }
@@ -88,14 +91,18 @@ public class ConversationServices {
     @Transactional
     public void sendMessage(Conversation c, User actualUser, User to, String text) {
         messageRepository.save(new Message(new Date(), text, c, actualUser, to));
-        logger.info(String.format("message sended"));
+        logger.info(String.format("Message sended"));
+        Log log = new Log("PET","CONVERSATION CONTROLLER SEND", new Date());
+        logService.addLog(log);
     }
 
     public Conversation deleteConversation(Long id, Long idUser) {
         Conversation c = conversationsRepository.findByUserAndId(id, idUser);
         if (c != null) {
            conversationsRepository.deleteById(id);
-            logger.info(String.format("Conversation %o has been deleted ", id));
+            logger.info(String.format("Deleting conversation"));
+            Log log = new Log("PET","CONVERSATION CONTROLLER DELETE", new Date());
+            logService.addLog(log);
           return c;
         }
 

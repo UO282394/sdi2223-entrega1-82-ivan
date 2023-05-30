@@ -71,6 +71,7 @@ public class HomeController {
         model.addAttribute("page", offers);
         model.addAttribute("email2", activeUser.getEmail());
         model.addAttribute("money", activeUser.getMoney());
+        model.addAttribute("searchQuery",searchText);
 
         logger.info(String.format("Acceso a HOME HOME"));
         Log log = new Log("PET","HOME CONTROLLER HOME", new Date());

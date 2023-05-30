@@ -1,4 +1,5 @@
 package com.uniovi.sdi2223entrega182.services;
+import com.uniovi.sdi2223entrega182.entities.Log;
 import com.uniovi.sdi2223entrega182.entities.Offer;
 import com.uniovi.sdi2223entrega182.entities.User;
 import com.uniovi.sdi2223entrega182.repositories.OffersRepository;
@@ -23,7 +24,8 @@ public class OffersService {
     private OffersRepository offersRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(SecurityService.class);
-
+    @Autowired
+    private LogService logService;
     public List<Offer> getOffers() {
         List<Offer> offers = new ArrayList<Offer>();
         offersRepository.findAll().forEach(offers::add);
@@ -35,11 +37,16 @@ public class OffersService {
     public void addOffer(Offer offer) {
         // Si en Id es null le asignamos el ultimo + 1 de la lista
         offersRepository.save(offer);
-        logger.info(String.format("Offer %s added", offer.getTitle()));
+        logger.info(String.format("OFERTA AÑADIDA"));
+        Log log = new Log("PET","OFFER CONTROLLER ADD", new Date());
+        logService.addLog(log);
+
     }
     public void deleteOffer(Long id) {
         offersRepository.deleteById(id);
-        logger.info(String.format("Offer %s deleted" + "offer id: ", id.toString()));
+        logger.info(String.format("OFERTA ELIMINADA"));
+        Log log = new Log("PET","OFFER CONTROLLER DELETE", new Date());
+        logService.addLog(log);
     }
 
     public Page<Offer> searchOffersByTitle(Pageable pageable, String searchText) {

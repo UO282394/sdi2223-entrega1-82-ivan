@@ -2,23 +2,48 @@
   <ul class="pagination justify-content-center">
     <!-- Primera -->
     <li class="page-item" >
-      <a class="page-link" th:href="@{'?page=0'}">Primera</a>
+      <div th:if="${searchQuery==null}">
+        <a class="page-link" th:href="@{'?page=0'}">Primera</a>
+      </div>
+      <div th:unless="${searchQuery==null}">
+        <a class="page-link" th:href="@{'?page=0&searchText='+${searchQuery}}">Primera</a>
+      </div>
     </li>
     <!-- Anterior (si la hay ) -->
     <li class="page-item" th:if='${page.getNumber()-1 >= 0}'>
-      <a class="page-link" th:href="@{'?page='+${page.getNumber()-1} }" th:text="${page.getNumber()}"></a>
+      <div th:if="${searchQuery==null}">
+        <a class="page-link" th:href="@{'?page='+${page.getNumber()-1}}" th:text="${page.getNumber()}"></a>
+      </div>
+      <div th:unless="${searchQuery==null}">
+        <a class="page-link" th:href="@{'?page='+${page.getNumber()-1}+'&searchText=' +${searchQuery}}" th:text="${page.getNumber()}"></a>
+      </div>
     </li>
     <!-- Actual -->
     <li class="page-item active" >
-      <a class="page-link" th:href="@{'?page='+${page.getNumber()} }" th:text="${page.getNumber()+1}"></a>
+      <div th:if="${searchQuery==null}">
+        <a class="page-link" th:href="@{'?page='+${page.getNumber()}}" th:text="${page.getNumber()+1}"></a>
+      </div>
+      <div th:unless="${searchQuery==null}">
+        <a class="page-link" th:href="@{'?page='+${page.getNumber()}+'&searchText='+${searchQuery}}" th:text="${page.getNumber()+1}"></a>
+      </div>
     </li>
     <!-- Siguiente (si la hay) -->
     <li class="page-item" th:if='${page.getNumber()+1 <= page.getTotalPages()-1}'>
-      <a class="page-link" th:href="@{'?page='+${page.getNumber()+1} }" th:text="${page.getNumber()+2}"></a>
+      <div th:if="${searchQuery==null}">
+        <a class="page-link" th:href="@{'?page='+${page.getNumber()+1}}" th:text="${page.getNumber()+2}"></a>
+      </div>
+      <div th:unless="${searchQuery==null}">
+        <a class="page-link" th:href="@{'?page='+${page.getNumber()+1}+'&searchText='+${searchQuery}}" th:text="${page.getNumber()+2}"></a>
+      </div>
     </li>
     <!-- Última -->
     <li class="page-item" >
-      <a class="page-link" th:href="@{'?page='+${page.getTotalPages()-1}}"> Última</a>
+      <div th:if="${searchQuery==null}">
+        <a class="page-link" th:href="@{'?page='+${page.getTotalPages()-1}}"> Última</a>
+      </div>
+      <div th:unless="${searchQuery==null}">
+        <a class="page-link" th:href="@{'?page='+${page.getTotalPages()-1}+'&searchText='+${searchQuery}}"> Última</a>
+      </div>
     </li>
   </ul>
 </div>

@@ -25,7 +25,9 @@ import java.util.Date;
 
 @Controller
 public class ConversationController {
-
+   //IMPORTANTE, SE HA DECIDIDO PONER LOS LOGGERS EN LA CAPA SERVICE PARA ASÍ PODER DIFERENCIAR DE FORMA MÁS SENCILLA
+    //CUANDO SE REALIZA UNA OPERACIÓN CORRECTAMENTE Y CUANDO NO,YA QUE MUCHAS OPERACIONES PUEDEN FALLAR A LA HORA DE
+    //CONSULTAR LA BASE DE DATOS Y ESA CONSULTA LA HACE EL SERVICE
     @Autowired
     private UsersService usersService;
     @Autowired
@@ -34,7 +36,7 @@ public class ConversationController {
     private ConversationServices conversationService;
 
     /**
-     * Metodo que devuelve un chat
+     * Metodo que devuelve un chat o lo crea si no existe
      * @param offerId
      * @param model
      * @param user
@@ -51,7 +53,7 @@ public class ConversationController {
         model.addAttribute("messages", conversationService.getMessages(c));
           model.addAttribute("offer", o);
             model.addAttribute("conversation", c);
-        return  "conversation/chat";}
+             return  "conversation/chat";}
        return "/home";
     }
 
@@ -129,7 +131,7 @@ public class ConversationController {
         User user = usersService.getUserByEmail(email);
       Conversation a = conversationService.deleteConversation(id,user.getId());
        if(a==null){
-           return "/convn/list";
+           return "/home";
        }
         return "redirect:/conversation/list";
     }

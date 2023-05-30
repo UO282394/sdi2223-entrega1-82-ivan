@@ -44,6 +44,9 @@ public class LogController {
     @RequestMapping("/logs/delete/")
     public String deleteOffer(){
         logService.deleteAll();
+        logger.info(String.format("DELETE LOG"));
+        Log log = new Log("PET","LOG CONTROLLER DELETE", new Date());
+        logService.addLog(log);
         return "redirect:/logs";
     }
 }

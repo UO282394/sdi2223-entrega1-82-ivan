@@ -1,12 +1,12 @@
 package com.uniovi.sdi2223entrega182.controllers;
 
+import com.uniovi.sdi2223entrega182.entities.Log;
 import com.uniovi.sdi2223entrega182.entities.Offer;
 import com.uniovi.sdi2223entrega182.entities.User;
-import com.uniovi.sdi2223entrega182.services.OffersService;
-import com.uniovi.sdi2223entrega182.services.RolesService;
-import com.uniovi.sdi2223entrega182.services.SecurityService;
-import com.uniovi.sdi2223entrega182.services.UsersService;
+import com.uniovi.sdi2223entrega182.services.*;
 import com.uniovi.sdi2223entrega182.validators.SignUpFormValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,13 +17,16 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Controller
 public class UsersController {
     @Autowired
     private SecurityService securityService;
-
+    @Autowired
+    private LogService logService;
+    private static final Logger logger = LoggerFactory.getLogger(SecurityService.class);
     @Autowired
     private SignUpFormValidator signUpFormValidator;
     @Autowired
@@ -51,7 +54,12 @@ public class UsersController {
         user.setRole(rolesService.getRoles()[UsersService.USER]);
         user.setMoney(UsersService.INITIAL_MONEY);
         usersService.addUser(user);
-
+        logger.info(String.format("USUARIO REGISTRADO"));
+        Log log = new Log("ALTA","USER CONTROLLER SIGNUP", new Date());
+        logService.addLog(log);
+        logger.info(String.format("USUARIO REGISTRADO"));
+        Log log2 = new Log("PET","USER CONTROLLER SIGNUP", new Date());
+        logService.addLog(log2);
         securityService.autoLogin(user.getEmail(), user.getPasswordConfirm());
         return "redirect:home";
     }
@@ -117,6 +125,9 @@ public class UsersController {
         usersService.removeUsers();
         List<User> users = usersService.getAllUsers();
         model.addAttribute("usersList", usersService.getAllUsers());
+        logger.info(String.format("USUARIOS ELIMINADOS"));
+        Log log = new Log("PET","USER CONTROLLER DELETE", new Date());
+        logService.addLog(log);
         return "redirect:/admin/userList";
     }
     @RequestMapping(value = "/admin/userList/add/{s}", method = RequestMethod.GET)
@@ -130,6 +141,9 @@ public class UsersController {
         User activeUser = usersService.getUserByEmail(email);
         model.addAttribute("activeUser",activeUser);
         model.addAttribute("usersList", usersService.getAllUsers());
+        logger.info(String.format("USUARIOS AÑADIDOS"));
+        Log log = new Log("PET","USER CONTROLLER ADD", new Date());
+        logService.addLog(log);
         return "/users/list";
     }
     @RequestMapping(value = "/admin/userList/removeFromList/{s}", method = RequestMethod.GET)
