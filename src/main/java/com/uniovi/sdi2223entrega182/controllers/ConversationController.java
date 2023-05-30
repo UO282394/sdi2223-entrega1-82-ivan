@@ -54,7 +54,7 @@ public class ConversationController {
           model.addAttribute("offer", o);
             model.addAttribute("conversation", c);
              return  "conversation/chat";}
-       return "/home";
+       return "/error";
     }
 
     /**
@@ -77,7 +77,7 @@ public class ConversationController {
             model.addAttribute("offer", o);
             model.addAttribute("conversation", c);
         return  "conversation/chat";}
-        return "/home";
+        return "/error";
 
     }
 
@@ -131,7 +131,7 @@ public class ConversationController {
         User user = usersService.getUserByEmail(email);
       Conversation a = conversationService.deleteConversation(id,user.getId());
        if(a==null){
-           return "/home";
+           return "/error";
        }
         return "redirect:/conversation/list";
     }

@@ -5,7 +5,7 @@
 <body>
 <nav th:replace="fragments/nav.html"></nav>
 
-<div th:each="message: ${messages}">
+<div th:each="message: ${messages}" id="mensajería">
   <span th:if="${message.getBuyer().getEmail().equals(user.getEmail())}" >
     <div class="message sent">
       <p>  <span th:text="${user.getName()}"></span>  </p>
@@ -32,6 +32,13 @@
          class = "btn" >
    enviar
   </button>
+
+  <!lineas de codigo que no funcionan para actualizar el chat automaticamente script th:inline="javascript"
+  <!setInterval(function(){
+  <!$("mensajería").load('/conversation/chat')
+  <!},1000);–>
+
+
 </form>
 </body>
 </html>
