@@ -467,15 +467,15 @@ class Sdi2223Entrega182ApplicationTests {
     }
 
     /**
-     * [Prueba22] Sobre una búsqueda determinada (a elección del desarrollador), comprar una oferta que deja
+     *  Sobre una búsqueda determinada (a elección del desarrollador), comprar una oferta que deja
      * un saldo positivo en el contador del comprador. Comprobar que el contador se actualiza correctamente
      * en la vista del comprador.
      */
     @Test
     @Order(22)
     void PR22(){
-
-        addOffer("cristianoronaldo@uniovi.es", "123456","ofertaSaldoPositivo","10");
+        //agregamos nueva oferta
+        agregaOferta("cristianoronaldo@uniovi.es", "123456","ofertaa","20");
         // Vamos al formulario de inicio de sesión
         PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
         // Rellenamos el formulario.
@@ -484,25 +484,24 @@ class Sdi2223Entrega182ApplicationTests {
         driver.findElement(enlace).click();
         // Pinchamos en la opción de Gestión de ofertas
         WebElement search = driver.findElement(By.name("searchText"));
-        search.sendKeys("ofertaSaldoPositivo");
+        search.sendKeys("ofertaa");
         WebElement boton = driver.findElement(By.id("buscar"));
         boton.click();
         enlace = By.xpath("//*[@id=\"tableOffers\"]/table/tbody/tr/td[6]/div/button/a");
         driver.findElement(enlace).click();
-        WebElement search1 = driver.findElement(By.name("searchText"));
-        String checkText = "90.0";
+        String checkText = "80.0";
         List<WebElement> result = PO_View.checkElementBy(driver, "text", checkText);
         Assertions.assertEquals(checkText , result.get(0).getText());
     }
     /**
-     *[Prueba23] Sobre una búsqueda determinada (a elección del desarrollador), comprar una oferta que deja
+     * Sobre una búsqueda determinada (a elección del desarrollador), comprar una oferta que deja
      * un saldo 0 en el contador del comprador. Comprobar que el contador se actualiza correctamente en la
      * vista del comprador.
      * */
     @Test
     @Order(23)
     void PR23(){
-        addOffer("upamencano@uniovi.es", "123456","ofertaSaldoCero","100");
+        agregaOferta("upamencano@uniovi.es", "123456","ofertaa","100");
         //Ahora nos desconectamos y comprobamos que aparece el menú de registrarse
         driver.manage().deleteAllCookies();
         // Vamos al formulario de inicio de sesión
@@ -514,46 +513,68 @@ class Sdi2223Entrega182ApplicationTests {
         driver.findElement(enlace).click();
         // Pinchamos en la opción de Gestión de ofertas
         WebElement search = driver.findElement(By.name("searchText"));
-        search.sendKeys("ofertaSaldoCero");
+        search.sendKeys("ofertaa");
         WebElement boton = driver.findElement(By.id("buscar"));
         boton.click();
         enlace = By.xpath("//*[@id=\"tableOffers\"]/table/tbody/tr/td[6]/div/button/a");
         driver.findElement(enlace).click();
-        WebElement search1 = driver.findElement(By.name("searchText"));
+
         String checkText = "0.0";
         List<WebElement> result = PO_View.checkElementBy(driver, "text", checkText);
         Assertions.assertEquals(checkText , result.get(0).getText());
     }
     /**
-     *[Prueba24] Sobre una búsqueda determinada (a elección del desarrollador), intentar comprar una oferta
+     *Sobre una búsqueda determinada (a elección del desarrollador), intentar comprar una oferta
      * que esté por encima de saldo disponible del comprador. Y comprobar que se muestra el mensaje de
      * saldo no suficiente.
      * * */
     @Test
     @Order(24)
     void PR24(){
-        addOffer("upamencano@uniovi.es", "123456","ofertaInsuficiente","110");
+        agregaOferta("upamencano@uniovi.es", "123456","ofertaa1","105");
         // Vamos al formulario de inicio de sesión
         PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
-
-        // Rellenamos el formulario.
+// Rellenamos el formulario.
         PO_LoginView.fillLoginForm(driver, "pepe@email.com", "77777");
         By enlace = By.xpath("//*[@id=\"home1\"]");
         driver.findElement(enlace).click();
         // Pinchamos en la opción de Gestión de ofertas
         WebElement search = driver.findElement(By.name("searchText"));
-        search.sendKeys("ofertaInsuficiente");
+        search.sendKeys("ofertaa1");
         WebElement boton = driver.findElement(By.id("buscar"));
         boton.click();
         enlace = By.xpath("//*[@id=\"tableOffers\"]/table/tbody/tr/td[6]/div/button/a");
+
         driver.findElement(enlace).click();
         WebElement search1 = driver.findElement(By.name("searchText"));
         String checkText = "No tienes suficiente dinero";
         List<WebElement> result = PO_View.checkElementBy(driver, "text", checkText);
-        Assertions.assertEquals(checkText , result.get(0).getText());
+Assertions.assertEquals(checkText , result.get(0).getText());
+    }
+    //metodo usado en tests 22,23,24
+    public void agregaOferta(String email, String contrasena, String nombre, String precio){
+        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
+        PO_LoginView.fillLoginForm(driver, email, contrasena);
+        //Cmmprobamos que entramos en la pagina privada del usuario
+        PO_View.checkElementBy(driver, "text", email);
+        //Pinchamos en la opción de menú de ofertas:
+        List<WebElement> elements = PO_View.checkElementBy(driver, "free", "/html/body/nav/div/ul[1]/li[6]");
+        elements.get(0).click();
+        //Esperamos a que aparezca la opción de añadir nota: //a[contains(@href, 'mark/add')]
+        elements = PO_View.checkElementBy(driver, "free", "//a[contains(@href, 'offer/add')]");
+        //Pinchamos en agregar Nota.
+        elements.get(0).click();
+
+        //Ahora vamos a rellenar la nota. //option[contains(@value, '4')]
+        String checkText = nombre;
+        PO_AddOfferView.fillForm(driver, checkText, "detalles de la oferta", precio);
+
+        //Ahora nos desconectamos
+        PO_PrivateView.clickOption(driver, "logout", "class", "btn btn-primary");
+        driver.manage().deleteAllCookies();
     }
     /**
-     *[Prueba25] Ir a la opción de ofertas compradas del usuario y mostrar la lista. Comprobar que aparecen
+     *Ir a la opción de ofertas compradas del usuario y mostrar la lista. Comprobar que aparecen
      * las ofertas que deben aparecer
      * * */
     @Test
@@ -655,8 +676,7 @@ class Sdi2223Entrega182ApplicationTests {
 
         PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
         PO_LoginView.fillLoginForm(driver, "djuka@uniovi.es", "123456");
-
-        String checkText = "Titulo";
+String checkText = "Titulo";
         List<WebElement>  result = PO_View.checkElementBy(driver, "text", checkText);
         Assertions.assertEquals(checkText , result.get(0).getText());
         By enlace = By.xpath("//*[@id=\"btnLanguage\"]");
@@ -728,6 +748,7 @@ class Sdi2223Entrega182ApplicationTests {
     /**
      * Estando autenticado como usuario administrador visualizar todos los logs generados en una
      * serie de interacciones y borrarlos
+     * Nunca va a estar vacío porque cuando borramos los logs añadimos un log de eliminado
      */
     @Test
     @Order(34)
@@ -807,30 +828,6 @@ class Sdi2223Entrega182ApplicationTests {
     }
 
 
-    public void addOffer(String email, String contrasena, String nombre, String precio){
-        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
-        PO_LoginView.fillLoginForm(driver, email, contrasena);
-        //Cmmprobamos que entramos en la pagina privada del usuario
-        PO_View.checkElementBy(driver, "text", email);
-        //Pinchamos en la opción de menú de ofertas:
-        List<WebElement> elements = PO_View.checkElementBy(driver, "free", "/html/body/nav/div/ul[1]/li[6]");
-        elements.get(0).click();
-        //Esperamos a que aparezca la opción de añadir nota: //a[contains(@href, 'mark/add')]
-        elements = PO_View.checkElementBy(driver, "free", "//a[contains(@href, 'offer/add')]");
-        //Pinchamos en agregar Nota.
-        elements.get(0).click();
-
-        //Ahora vamos a rellenar la nota. //option[contains(@value, '4')]
-        String checkText = nombre;
-        PO_AddOfferView.fillForm(driver, checkText, "detalles de la oferta", precio);
-
-        //Comprobamos que aparece la oferta en la página
-        elements = PO_View.checkElementBy(driver, "text", checkText);
-        Assertions.assertEquals(checkText, elements.get(0).getText());
-        //Ahora nos desconectamos y comprobamos que aparece el menú de registrarse
-        PO_PrivateView.clickOption(driver, "logout", "class", "btn btn-primary");
-        driver.manage().deleteAllCookies();
-    }
 
 
 }
