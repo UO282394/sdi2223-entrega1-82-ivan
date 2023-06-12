@@ -18,7 +18,7 @@ class Sdi2223Entrega182ApplicationTests {
 
     static String PathFirefox = "C:\\Program Files\\Mozilla Firefox\\firefox.exe";
     //static String Geckodriver = "C:\\Path\\geckodriver-v0.30.0-win64.exe";
-    static String Geckodriver = "C:\\Users\\juani\\OneDrive\\Escritorio\\PL-SDI-Sesio╠ün5-material\\geckodriver-v0.30.0-win64.exe";
+    static String Geckodriver = "C:\\Users\\ivand\\OneDrive\\Escritorio\\SDI\\P5\\PL-SDI-Sesio╠ün5-material\\geckodriver-v0.30.0-win64.exe";
     static WebDriver driver = getDriver(PathFirefox, Geckodriver);
     static String URL = "http://localhost:8090";
     public static WebDriver getDriver(String PathFirefox, String Geckodriver) {
@@ -45,7 +45,6 @@ class Sdi2223Entrega182ApplicationTests {
         //Cerramos el navegador al finalizar las pruebas
         driver.quit();
     }
-
     /**
      *  Registro de Usuario con datos válidos.
      */
@@ -178,6 +177,107 @@ class Sdi2223Entrega182ApplicationTests {
         String checkText = "Credenciales erróneas o campos vacíos";
         assertThrows(Exception.class, () -> {PO_HomeView.clickOption(driver, "logout", "class", "btn btn-primary");});
 
+    }
+    /**
+     * Mostrar el listado de usuarios y comprobar que se muestran todos los que existen en el
+     * sistema.
+     */
+    @Test
+    @Order(11)
+    void PR11(){
+        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
+        PO_LoginView.fillLoginForm(driver, "admin@email.com", "admin");
+        By enlace = By.xpath("//*[@id=\"listaUsuarios\"]");
+        driver.findElement(enlace).click();
+        String checkText = "Usuarios";
+        PO_View.checkElementBy(driver,"text",checkText);
+        //Contamos el número de filas de usuarios
+        List<WebElement> userList = SeleniumUtils.waitLoadElementsBy(driver, "free", "//tbody/tr",
+                PO_View.getTimeout());
+        Assertions.assertEquals(22,userList.size() );
+    }
+
+    /**
+     * Ir a la lista de usuarios, borrar el primer usuario de la lista, comprobar que la lista se actualiza
+     * y dicho usuario desaparece.
+     */
+    @Test
+    @Order(12)
+    void PR12(){
+        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
+        PO_LoginView.fillLoginForm(driver, "admin@email.com", "admin");
+        By enlace2 = By.xpath("//*[@id=\"listaUsuarios\"]");
+        driver.findElement(enlace2).click();
+        String checkText = "Usuarios";
+        PO_View.checkElementBy(driver,"text",checkText);
+        //Contamos el número de filas de usuarios
+        List<WebElement> userList = SeleniumUtils.waitLoadElementsBy(driver, "free", "//tbody/tr",
+                PO_View.getTimeout());
+        Assertions.assertEquals(22,userList.size() );
+        By enlace = By.xpath("/html/body/div[1]/table/tbody/tr[2]/td[4]/input");
+        driver.findElement(enlace).click();
+
+        By enlaceBorrar = By.xpath("//*[@id=\"deleteAll\"]");
+        //td[contains(text(), 'Nota A2')]/following-sibling::*[2]
+        driver.findElement(enlaceBorrar).click();
+        userList = SeleniumUtils.waitLoadElementsBy(driver, "free", "//tbody/tr",
+                PO_View.getTimeout());
+        Assertions.assertEquals(21,userList.size() );
+
+
+    }
+    /**
+     * Ir a la lista de usuarios, borrar el último usuario de la lista, comprobar que la lista se actualiza
+     * y dicho usuario desaparece.
+     */
+    @Test
+    @Order(13)
+    void PR13(){
+        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
+        PO_LoginView.fillLoginForm(driver, "admin@email.com", "admin");
+        By enlace3 = By.xpath("//*[@id=\"listaUsuarios\"]");
+        driver.findElement(enlace3).click();
+        String checkText = "Usuarios";
+        PO_View.checkElementBy(driver,"text",checkText);
+        //Contamos el número de filas de usuarios
+        List<WebElement> userList = SeleniumUtils.waitLoadElementsBy(driver, "free", "//tbody/tr",
+                PO_View.getTimeout());
+        Assertions.assertEquals(21,userList.size() );
+        By enlace = By.xpath("/html/body/div[1]/table/tbody/tr[6]/td[4]/input");
+        driver.findElement(enlace).click();
+        By enlaceBorrar = By.xpath("//*[@id=\"deleteAll\"]");
+        driver.findElement(enlaceBorrar).click();
+        userList = SeleniumUtils.waitLoadElementsBy(driver, "free", "//tbody/tr",
+                PO_View.getTimeout());
+        Assertions.assertEquals(20,userList.size() );
+    }
+    /**
+     *  Ir a la lista de usuarios, borrar 3 usuarios, comprobar que la lista se actualiza y dichos
+     * usuarios desaparecen.
+     */
+    @Test
+    @Order(14)
+    void PR14(){
+        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
+        PO_LoginView.fillLoginForm(driver, "admin@email.com", "admin");
+        By enlace = By.xpath("//*[@id=\"listaUsuarios\"]");
+        driver.findElement(enlace).click();
+        String checkText = "Usuarios";
+        PO_View.checkElementBy(driver,"text",checkText);
+        //Contamos el número de filas de usuarios
+        List<WebElement> userList = SeleniumUtils.waitLoadElementsBy(driver, "free", "//tbody/tr",
+                PO_View.getTimeout());
+        Assertions.assertEquals(20,userList.size() );
+
+        By enlace2 = By.xpath("/html/body/div[1]/table/tbody/tr[2]/td[4]/input");
+        driver.findElement(enlace2).click();
+        By enlace3 = By.xpath("/html/body/div[1]/table/tbody/tr[3]/td[4]/input");
+        driver.findElement(enlace3).click();
+        By enlaceBorrar = By.xpath("//*[@id=\"deleteAll\"]");
+        driver.findElement(enlaceBorrar).click();
+        userList = SeleniumUtils.waitLoadElementsBy(driver, "free", "//tbody/tr",
+                PO_View.getTimeout());
+        Assertions.assertEquals(18,userList.size() );
     }
     /**
      *  Añadir oferta con datos validos
@@ -365,243 +465,117 @@ class Sdi2223Entrega182ApplicationTests {
         assertThrows(Exception.class, () -> { List<WebElement> ofertas = SeleniumUtils.EsperaCargaPagina(driver, "free", "//tbody/tr", PO_View.getTimeout());
         });
     }
+
     /**
-     * Mostrar el listado de usuarios y comprobar que se muestran todos los que existen en el
-     * sistema.
+     * [Prueba22] Sobre una búsqueda determinada (a elección del desarrollador), comprar una oferta que deja
+     * un saldo positivo en el contador del comprador. Comprobar que el contador se actualiza correctamente
+     * en la vista del comprador.
      */
     @Test
-    @Order(11)
-    void PR11(){
+    @Order(22)
+    void PR22(){
+
+        addOffer("cristianoronaldo@uniovi.es", "123456","ofertaSaldoPositivo","10");
+        // Vamos al formulario de inicio de sesión
         PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
-        PO_LoginView.fillLoginForm(driver, "admin@email.com", "admin");
-        By enlace = By.xpath("//*[@id=\"listaUsuarios\"]");
-        driver.findElement(enlace).click();
-        String checkText = "Usuarios";
-        PO_View.checkElementBy(driver,"text",checkText);
-        //Contamos el número de filas de usuarios
-        List<WebElement> userList = SeleniumUtils.waitLoadElementsBy(driver, "free", "//tbody/tr",
-                PO_View.getTimeout());
-        Assertions.assertEquals(22,userList.size() );
-    }
-
-    /**
-     * Ir a la lista de usuarios, borrar el primer usuario de la lista, comprobar que la lista se actualiza
-     * y dicho usuario desaparece.
-     */
-    @Test
-    @Order(12)
-    void PR12(){
-        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
-        PO_LoginView.fillLoginForm(driver, "admin@email.com", "admin");
-        By enlace2 = By.xpath("//*[@id=\"listaUsuarios\"]");
-        driver.findElement(enlace2).click();
-        String checkText = "Usuarios";
-        PO_View.checkElementBy(driver,"text",checkText);
-        //Contamos el número de filas de usuarios
-        List<WebElement> userList = SeleniumUtils.waitLoadElementsBy(driver, "free", "//tbody/tr",
-                PO_View.getTimeout());
-        Assertions.assertEquals(22,userList.size() );
-        By enlace = By.xpath("/html/body/div[1]/table/tbody/tr[2]/td[4]/input");
-        driver.findElement(enlace).click();
-
-        By enlaceBorrar = By.xpath("//*[@id=\"deleteAll\"]");
-        //td[contains(text(), 'Nota A2')]/following-sibling::*[2]
-        driver.findElement(enlaceBorrar).click();
-        userList = SeleniumUtils.waitLoadElementsBy(driver, "free", "//tbody/tr",
-                PO_View.getTimeout());
-        Assertions.assertEquals(21,userList.size() );
-
-
-    }
-    /**
-     * Internacionalización
-     */
-    @Test
-    @Order(29)
-    void PR29(){
-        PO_HomeView.checkElementBy(driver, "text", "Home");
-
-
-    }
-    /**
-     * Ir a la lista de usuarios, borrar el último usuario de la lista, comprobar que la lista se actualiza
-     * y dicho usuario desaparece.
-     */
-    @Test
-    @Order(13)
-    void PR13(){
-        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
-        PO_LoginView.fillLoginForm(driver, "admin@email.com", "admin");
-        By enlace3 = By.xpath("//*[@id=\"listaUsuarios\"]");
-        driver.findElement(enlace3).click();
-        String checkText = "Usuarios";
-        PO_View.checkElementBy(driver,"text",checkText);
-        //Contamos el número de filas de usuarios
-        List<WebElement> userList = SeleniumUtils.waitLoadElementsBy(driver, "free", "//tbody/tr",
-                PO_View.getTimeout());
-        Assertions.assertEquals(21,userList.size() );
-        By enlace = By.xpath("/html/body/div[1]/table/tbody/tr[6]/td[4]/input");
-        driver.findElement(enlace).click();
-        By enlaceBorrar = By.xpath("//*[@id=\"deleteAll\"]");
-        driver.findElement(enlaceBorrar).click();
-        userList = SeleniumUtils.waitLoadElementsBy(driver, "free", "//tbody/tr",
-                PO_View.getTimeout());
-        Assertions.assertEquals(20,userList.size() );
-    }
-    /**
-     *  Ir a la lista de usuarios, borrar 3 usuarios, comprobar que la lista se actualiza y dichos
-     * usuarios desaparecen.
-     */
-    @Test
-    @Order(14)
-    void PR14(){
-        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
-        PO_LoginView.fillLoginForm(driver, "admin@email.com", "admin");
-        By enlace = By.xpath("//*[@id=\"listaUsuarios\"]");
-        driver.findElement(enlace).click();
-        String checkText = "Usuarios";
-        PO_View.checkElementBy(driver,"text",checkText);
-        //Contamos el número de filas de usuarios
-        List<WebElement> userList = SeleniumUtils.waitLoadElementsBy(driver, "free", "//tbody/tr",
-                PO_View.getTimeout());
-        Assertions.assertEquals(20,userList.size() );
-
-        By enlace2 = By.xpath("/html/body/div[1]/table/tbody/tr[2]/td[4]/input");
-        driver.findElement(enlace2).click();
-        By enlace3 = By.xpath("/html/body/div[1]/table/tbody/tr[3]/td[4]/input");
-        driver.findElement(enlace3).click();
-        By enlaceBorrar = By.xpath("//*[@id=\"deleteAll\"]");
-        driver.findElement(enlaceBorrar).click();
-        userList = SeleniumUtils.waitLoadElementsBy(driver, "free", "//tbody/tr",
-                PO_View.getTimeout());
-        Assertions.assertEquals(18,userList.size() );
-    }
-    /**
-     *  Acceder sin estar autenticado a la opcion listado de usuarios
-     */
-    @Test
-    @Order(30)
-    void PR30() {
-        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
-        assertThrows(Exception.class, () -> {PO_HomeView.clickOption(driver, "admin/userList", "class", "btn btn-primary");});
-
-    }
-    /**
-     *  Acceder sin estar autenticado a la opcion listado de conversaciones
-     */
-    @Test
-    @Order(31)
-    void PR31() {
-        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
-        assertThrows(Exception.class, () -> {PO_HomeView.clickOption(driver, "conversation/list", "class", "btn btn-primary");});
-    }
-    /**
-     *  Estando autenticado como usuario estándar intentar acceder a una opción disponible solo
-     * para usuarios administradores
-     */
-    @Test
-    @Order(32)
-    void PR32() {
-        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
+        // Rellenamos el formulario.
         PO_LoginView.fillLoginForm(driver, "mariobalotelli@uniovi.es", "123456");
-        PO_HomeView.clickOption(driver, "log", "class", "btn btn-primary");
-        String checkText = "Identifícate";
+        By enlace = By.xpath("/html/body/nav/div/ul[1]/li[1]");
+        driver.findElement(enlace).click();
+        // Pinchamos en la opción de Gestión de ofertas
+        WebElement search = driver.findElement(By.name("searchText"));
+        search.sendKeys("ofertaSaldoPositivo");
+        WebElement boton = driver.findElement(By.id("buscar"));
+        boton.click();
+        enlace = By.xpath("//*[@id=\"tableOffers\"]/table/tbody/tr/td[6]/div/button/a");
+        driver.findElement(enlace).click();
+        WebElement search1 = driver.findElement(By.name("searchText"));
+        String checkText = "90.0";
+        List<WebElement> result = PO_View.checkElementBy(driver, "text", checkText);
+        Assertions.assertEquals(checkText , result.get(0).getText());
+    }
+    /**
+     *[Prueba23] Sobre una búsqueda determinada (a elección del desarrollador), comprar una oferta que deja
+     * un saldo 0 en el contador del comprador. Comprobar que el contador se actualiza correctamente en la
+     * vista del comprador.
+     * */
+    @Test
+    @Order(23)
+    void PR23(){
+        addOffer("upamencano@uniovi.es", "123456","ofertaSaldoCero","100");
+        //Ahora nos desconectamos y comprobamos que aparece el menú de registrarse
+        driver.manage().deleteAllCookies();
+        // Vamos al formulario de inicio de sesión
+        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
+
+        // Rellenamos el formulario.
+        PO_LoginView.fillLoginForm(driver, "cristianoronaldo@uniovi.es", "123456");
+        By enlace = By.xpath("//*[@id=\"home1\"]");
+        driver.findElement(enlace).click();
+        // Pinchamos en la opción de Gestión de ofertas
+        WebElement search = driver.findElement(By.name("searchText"));
+        search.sendKeys("ofertaSaldoCero");
+        WebElement boton = driver.findElement(By.id("buscar"));
+        boton.click();
+        enlace = By.xpath("//*[@id=\"tableOffers\"]/table/tbody/tr/td[6]/div/button/a");
+        driver.findElement(enlace).click();
+        WebElement search1 = driver.findElement(By.name("searchText"));
+        String checkText = "0.0";
+        List<WebElement> result = PO_View.checkElementBy(driver, "text", checkText);
+        Assertions.assertEquals(checkText , result.get(0).getText());
+    }
+    /**
+     *[Prueba24] Sobre una búsqueda determinada (a elección del desarrollador), intentar comprar una oferta
+     * que esté por encima de saldo disponible del comprador. Y comprobar que se muestra el mensaje de
+     * saldo no suficiente.
+     * * */
+    @Test
+    @Order(24)
+    void PR24(){
+        addOffer("upamencano@uniovi.es", "123456","ofertaInsuficiente","110");
+        // Vamos al formulario de inicio de sesión
+        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
+
+        // Rellenamos el formulario.
+        PO_LoginView.fillLoginForm(driver, "pepe@email.com", "77777");
+        By enlace = By.xpath("//*[@id=\"home1\"]");
+        driver.findElement(enlace).click();
+        // Pinchamos en la opción de Gestión de ofertas
+        WebElement search = driver.findElement(By.name("searchText"));
+        search.sendKeys("ofertaInsuficiente");
+        WebElement boton = driver.findElement(By.id("buscar"));
+        boton.click();
+        enlace = By.xpath("//*[@id=\"tableOffers\"]/table/tbody/tr/td[6]/div/button/a");
+        driver.findElement(enlace).click();
+        WebElement search1 = driver.findElement(By.name("searchText"));
+        String checkText = "No tienes suficiente dinero";
+        List<WebElement> result = PO_View.checkElementBy(driver, "text", checkText);
+        Assertions.assertEquals(checkText , result.get(0).getText());
+    }
+    /**
+     *[Prueba25] Ir a la opción de ofertas compradas del usuario y mostrar la lista. Comprobar que aparecen
+     * las ofertas que deben aparecer
+     * * */
+    @Test
+    @Order(25)
+    void PR25(){
+        int nOfertas = 0;
+        // Vamos al formulario de inicio de sesión
+        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
+
+        // Rellenamos el formulario.
+        PO_LoginView.fillLoginForm(driver, "pepe@email.com", "77777");
+        By enlace = By.xpath("//*[@id=\"home1\"]");
+        String checkText = "No hay ofertas";
         List<WebElement> result = PO_View.checkElementBy(driver, "text", checkText);
         Assertions.assertEquals(checkText , result.get(0).getText());
     }
 
     /**
-     * Estando autenticado como usuario administrador visualizar todos los logs generados en una
-     * serie de interacciones
+     * [Prueba26] Sobre una búsqueda determinada de ofertas (a elección de desarrollador), enviar un mensaje
+     * a una oferta concreta. Se abriría dicha conversación por primera vez. Comprobar que el mensaje aparece
+     * en la conversación.
      */
-    @Test
-    @Order(33)
-    void PR33() {
-        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
-        PO_LoginView.fillLoginForm(driver, "admin@email.com", "admin");
-        assertThrows(Exception.class, () -> { PO_HomeView.clickOption(driver, "logs", "class", "btn btn-primary");});
-        String checkText = "LOGS EN EL SISTEMA";
-        List<WebElement> result = PO_View.checkElementBy(driver, "text", checkText);
-        Assertions.assertEquals(checkText, result.get(0).getText());
-    }
-    /**
-     * Estando autenticado como usuario administrador visualizar todos los logs generados en una
-     * serie de interacciones y borrarlos
-     */
-    @Test
-    @Order(34)
-    void PR34() {
-        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
-        PO_LoginView.fillLoginForm(driver, "admin@email.com", "admin");
-        assertThrows(Exception.class, () -> { PO_HomeView.clickOption(driver, "logs", "class", "btn btn-primary");});
-        assertThrows(Exception.class, () -> { PO_HomeView.clickOption(driver, "logs/delete", "class", "btn btn-primary");});
-        String checkText = "No hay logs disponibles";
-        List<WebElement> result = PO_View.checkElementBy(driver, "text", checkText);
-        Assertions.assertEquals(checkText, result.get(0).getText());
-    }
-    /**
-     *  Crear una oferta con imagen adjunta
-     */
-    @Test
-    @Order(40)
-    void PR40() {
-        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
-        PO_LoginView.fillLoginForm(driver, "mariobalotelli@uniovi.es", "123456");
-        //Cmmprobamos que entramos en la pagina privada del usuario
-        PO_View.checkElementBy(driver, "text", "mariobalotelli@uniovi.es");
-        //Pinchamos en la opción de menú de ofertas:
-        List<WebElement> elements = PO_View.checkElementBy(driver, "free", "/html/body/nav/div/ul[1]/li[6]");
-        elements.get(0).click();
-        //Esperamos a que aparezca la opción de añadir oferta: //a[contains(@href, 'offer/add')]
-        elements = PO_View.checkElementBy(driver, "free", "//a[contains(@href, 'offer/add')]");
-        //Pinchamos en agregar Oferta.
-        elements.get(0).click();
-
-        //Ahora vamos a rellenar la oferta.
-        String checkText = "Oferta Nueva 1";
-        // IMPORTANTE: actualizar el path hacia la imagen de prueba
-        PO_AddOfferView.fillFormWithImage(driver, checkText, "detalles de la oferta", "300", "C:\\Users\\Javier\\Desktop\\SDI\\LABORATORIOS\\PROYECTO\\sdi2223-entrega1-82\\src\\main\\resources\\static\\images\\pruebas\\prueba.png");
-
-        //Comprobamos que aparece la oferta en la página
-        elements = PO_View.checkElementBy(driver, "text", checkText);
-        Assertions.assertEquals(checkText, elements.get(0).getText());
-        //Comprobamos que aparece la nueva imagen
-        elements = PO_View.checkElementBy(driver, "free", "//img[contains(@alt, 'prueba.png')]");
-        Assertions.assertEquals(elements.size(), 1);
-        //Ahora nos desconectamos y comprobamos que aparece el menú de registrarse
-        PO_PrivateView.clickOption(driver, "logout", "class", "btn btn-primary");
-    }
-    /**
-     *  Crear una oferta sin imagen adjunta
-     */
-    @Test
-    @Order(41)
-    void PR41() {
-        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
-        PO_LoginView.fillLoginForm(driver, "mariobalotelli@uniovi.es", "123456");
-        //Cmmprobamos que entramos en la pagina privada del usuario
-        PO_View.checkElementBy(driver, "text", "mariobalotelli@uniovi.es");
-        //Pinchamos en la opción de menú de ofertas:
-        List<WebElement> elements = PO_View.checkElementBy(driver, "free", "/html/body/nav/div/ul[1]/li[6]");
-        elements.get(0).click();
-        //Esperamos a que aparezca la opción de añadir oferta: //a[contains(@href, 'offer/add')]
-        elements = PO_View.checkElementBy(driver, "free", "//a[contains(@href, 'offer/add')]");
-        //Pinchamos en agregar Oferta.
-        elements.get(0).click();
-
-        //Ahora vamos a rellenar la oferta.
-        String checkText = "Oferta Nueva 1";
-        PO_AddOfferView.fillForm(driver, checkText, "detalles de la oferta", "300");
-
-        //Comprobamos que aparece la oferta en la página
-        elements = PO_View.checkElementBy(driver, "text", checkText);
-        Assertions.assertEquals(checkText, elements.get(0).getText());
-        //Comprobamos que el numero de imagenes por defecto es 4
-        elements = PO_View.checkElementBy(driver, "free", "//img[contains(@alt, 'default-image.png')]");
-        Assertions.assertEquals(elements.size(), 4);
-        //Ahora nos desconectamos y comprobamos que aparece el menú de registrarse
-        PO_PrivateView.clickOption(driver, "logout", "class", "btn btn-primary");
-    }
     @Test
     @Order(26)
     void PR26() {
@@ -668,37 +642,195 @@ class Sdi2223Entrega182ApplicationTests {
         PO_PrivateView.clickOption(driver, "logout", "class", "btn btn-primary");
 
     }
+
+    /**
+     * [Prueba29] Visualizar al menos cuatro páginas en español/inglés/español (comprobando que algunas de
+     * las etiquetas cambian al idioma correspondiente). Ejemplo, Página principal/Opciones Principales de
+     * Usuario/Listado de Usuarios
+     */
     @Test
-    @Order(35)
-    void PR35() {
+    @Order(29)
+    void PR29(){
+        PO_HomeView.checkElementBy(driver, "text", "Home");
+
+        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
+        PO_LoginView.fillLoginForm(driver, "djuka@uniovi.es", "123456");
+
+        String checkText = "Titulo";
+        List<WebElement>  result = PO_View.checkElementBy(driver, "text", checkText);
+        Assertions.assertEquals(checkText , result.get(0).getText());
+        By enlace = By.xpath("//*[@id=\"btnLanguage\"]");
+        driver.findElement(enlace).click();
+        enlace = By.xpath("//*[@id=\"btnEnglish\"]");
+        driver.findElement(enlace).click();
+        checkText = "Title";
+        result = PO_View.checkElementBy(driver, "text", checkText);
+        Assertions.assertEquals(checkText , result.get(0).getText());
+        enlace = By.xpath("//*[@id=\"myNavbar\"]/ul[4]/li[1]");
+        driver.findElement(enlace).click();
+        enlace = By.xpath("//*[@id=\"btnSpanish\"]");
+        driver.findElement(enlace).click();
+        checkText = "Titulo";
+        result = PO_View.checkElementBy(driver, "text", checkText);
+        Assertions.assertEquals(checkText , result.get(0).getText());
+
+
+    }
+
+    /**
+     *  Acceder sin estar autenticado a la opcion listado de usuarios
+     */
+    @Test
+    @Order(30)
+    void PR30() {
+        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
+        assertThrows(Exception.class, () -> {PO_HomeView.clickOption(driver, "admin/userList", "class", "btn btn-primary");});
+
+    }
+    /**
+     *  Acceder sin estar autenticado a la opcion listado de conversaciones
+     */
+    @Test
+    @Order(31)
+    void PR31() {
+        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
+        assertThrows(Exception.class, () -> {PO_HomeView.clickOption(driver, "conversation/list", "class", "btn btn-primary");});
+    }
+    /**
+     *  Estando autenticado como usuario estándar intentar acceder a una opción disponible solo
+     * para usuarios administradores
+     */
+    @Test
+    @Order(32)
+    void PR32() {
+        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
+        PO_LoginView.fillLoginForm(driver, "mariobalotelli@uniovi.es", "123456");
+        PO_HomeView.clickOption(driver, "log", "class", "btn btn-primary");
+        String checkText = "Identifícate";
+        List<WebElement> result = PO_View.checkElementBy(driver, "text", checkText);
+        Assertions.assertEquals(checkText , result.get(0).getText());
+    }
+
+    /**
+     * Estando autenticado como usuario administrador visualizar todos los logs generados en una
+     * serie de interacciones
+     */
+    @Test
+    @Order(33)
+    void PR33() {
+        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
+        PO_LoginView.fillLoginForm(driver, "admin@email.com", "admin");
+        assertThrows(Exception.class, () -> { PO_HomeView.clickOption(driver, "logs", "class", "btn btn-primary");});
+        String checkText = "LOGS EN EL SISTEMA";
+        List<WebElement> result = PO_View.checkElementBy(driver, "text", checkText);
+        Assertions.assertEquals(checkText, result.get(0).getText());
+    }
+    /**
+     * Estando autenticado como usuario administrador visualizar todos los logs generados en una
+     * serie de interacciones y borrarlos
+     */
+    @Test
+    @Order(34)
+    void PR34() {
+        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
+        PO_LoginView.fillLoginForm(driver, "admin@email.com", "admin");
+        assertThrows(Exception.class, () -> { PO_HomeView.clickOption(driver, "logs", "class", "btn btn-primary");});
+        assertThrows(Exception.class, () -> { PO_HomeView.clickOption(driver, "logs/delete", "class", "btn btn-primary");});
+        String checkText = "CONTROLLER DELETE";
+        List<WebElement> list = driver.findElements(By.xpath("//*[contains(text(),'" + checkText + "')]"));
+        Assertions.assertTrue(list.size() > 0, "Texto " + checkText + " no localizado!");
+
+    }
+
+    /**
+     *  Crear una oferta con imagen adjunta
+     */
+    @Test
+    @Order(40)
+    void PR40() {
         PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
         PO_LoginView.fillLoginForm(driver, "djuka@uniovi.es", "123456");
         //Cmmprobamos que entramos en la pagina privada del usuario
         PO_View.checkElementBy(driver, "text", "djuka@uniovi.es");
+        //Pinchamos en la opción de menú de ofertas:
+        List<WebElement> elements = PO_View.checkElementBy(driver, "free", "/html/body/nav/div/ul[1]/li[6]");
+        elements.get(0).click();
+        //Esperamos a que aparezca la opción de añadir oferta: //a[contains(@href, 'offer/add')]
+        elements = PO_View.checkElementBy(driver, "free", "//a[contains(@href, 'offer/add')]");
+        //Pinchamos en agregar Oferta.
+        elements.get(0).click();
 
-        //Pinchamos en lista de conversaciones
-        List<WebElement> elements = PO_View.checkElementBy(driver, "free", "/html/body/nav/div/ul[1]/li[7]/a");
+        //Ahora vamos a rellenar la oferta.
+        String checkText = "Oferta Nueva 1";
+        // IMPORTANTE: actualizar el path hacia la imagen de prueba
+        PO_AddOfferView.fillFormWithImage(driver, checkText, "detalles de la oferta", "300", "C:\\Users\\ivand\\OneDrive\\Escritorio\\SDI\\P5\\PL-SDI-Sesio╠ün5-material\\prueba.png");
 
-        //comprobamos que hay 1 conversación creada
-        Assertions.assertEquals(1,elements.size());
+        //Comprobamos que aparece la oferta en la página
+        elements = PO_View.checkElementBy(driver, "text", checkText);
+        Assertions.assertEquals(checkText, elements.get(0).getText());
+        //Comprobamos que aparece la nueva imagen
+        elements = PO_View.checkElementBy(driver, "free", "//img[contains(@alt, 'prueba.png')]");
+        Assertions.assertEquals(elements.size(), 1);
         //Ahora nos desconectamos y comprobamos que aparece el menú de registrarse
         PO_PrivateView.clickOption(driver, "logout", "class", "btn btn-primary");
     }
+    /**
+     *  Crear una oferta sin imagen adjunta
+     */
     @Test
-    @Order(36)
-    void PR36() {
+    @Order(41)
+    void PR41() {
         PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
         PO_LoginView.fillLoginForm(driver, "djuka@uniovi.es", "123456");
         //Cmmprobamos que entramos en la pagina privada del usuario
         PO_View.checkElementBy(driver, "text", "djuka@uniovi.es");
+        //Pinchamos en la opción de menú de ofertas:
+        List<WebElement> elements = PO_View.checkElementBy(driver, "free", "/html/body/nav/div/ul[1]/li[6]");
+        elements.get(0).click();
+        //Esperamos a que aparezca la opción de añadir oferta: //a[contains(@href, 'offer/add')]
+        elements = PO_View.checkElementBy(driver, "free", "//a[contains(@href, 'offer/add')]");
+        //Pinchamos en agregar Oferta.
+        elements.get(0).click();
 
-        //Pinchamos en lista de conversaciones
-        List<WebElement> elements = PO_View.checkElementBy(driver, "free", "/html/body/nav/div/ul[1]/li[7]/a");
+        //Ahora vamos a rellenar la oferta.
+        String checkText = "Oferta Nueva 1";
+        PO_AddOfferView.fillForm(driver, checkText, "detalles de la oferta", "300");
 
-        //comprobamos que hay 1 conversación creada
-        Assertions.assertEquals(1,elements.size());
+        //Comprobamos que aparece la oferta en la página
+        elements = PO_View.checkElementBy(driver, "text", checkText);
+        Assertions.assertEquals(checkText, elements.get(0).getText());
+        //Comprobamos que el numero de imagenes por defecto es 4
+        elements = PO_View.checkElementBy(driver, "free", "//img[contains(@alt, 'default-image.png')]");
+        Assertions.assertEquals(elements.size(), 1);
         //Ahora nos desconectamos y comprobamos que aparece el menú de registrarse
         PO_PrivateView.clickOption(driver, "logout", "class", "btn btn-primary");
     }
+
+
+    public void addOffer(String email, String contrasena, String nombre, String precio){
+        PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
+        PO_LoginView.fillLoginForm(driver, email, contrasena);
+        //Cmmprobamos que entramos en la pagina privada del usuario
+        PO_View.checkElementBy(driver, "text", email);
+        //Pinchamos en la opción de menú de ofertas:
+        List<WebElement> elements = PO_View.checkElementBy(driver, "free", "/html/body/nav/div/ul[1]/li[6]");
+        elements.get(0).click();
+        //Esperamos a que aparezca la opción de añadir nota: //a[contains(@href, 'mark/add')]
+        elements = PO_View.checkElementBy(driver, "free", "//a[contains(@href, 'offer/add')]");
+        //Pinchamos en agregar Nota.
+        elements.get(0).click();
+
+        //Ahora vamos a rellenar la nota. //option[contains(@value, '4')]
+        String checkText = nombre;
+        PO_AddOfferView.fillForm(driver, checkText, "detalles de la oferta", precio);
+
+        //Comprobamos que aparece la oferta en la página
+        elements = PO_View.checkElementBy(driver, "text", checkText);
+        Assertions.assertEquals(checkText, elements.get(0).getText());
+        //Ahora nos desconectamos y comprobamos que aparece el menú de registrarse
+        PO_PrivateView.clickOption(driver, "logout", "class", "btn btn-primary");
+        driver.manage().deleteAllCookies();
+    }
+
 
 }

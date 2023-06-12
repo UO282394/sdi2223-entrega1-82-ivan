@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.Set;
 
@@ -30,7 +31,8 @@ public class HomeController {
      * Método que retorna a la vista principal del sistema.
      * @return la vista mencionada
      */
-
+    @Autowired
+    private HttpSession httpSession;
     @Autowired
     private OffersService offersService;
     @Autowired
@@ -76,6 +78,11 @@ public class HomeController {
         logger.info(String.format("Acceso a HOME HOME"));
         Log log = new Log("PET","HOME CONTROLLER HOME", new Date());
         logService.addLog(log);
+        if(httpSession.getAttribute("enoughMoney")!=null)
+
+        model.addAttribute("enoughMoney", httpSession.getAttribute("enoughMoney"));
+        else
+            model.addAttribute("enoughMoney", true);
 
         return "home";
     }

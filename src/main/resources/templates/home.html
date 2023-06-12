@@ -3,6 +3,9 @@
 <head th:replace="fragments/head.html"></head>
 <body>
 <nav th:replace="fragments/nav"></nav>
+<div th:if="${!enoughMoney}">
+    <p >No tienes suficiente dinero</p>
+</div>
 <div>
     <h2> <span th:text="#{offers.offers}"></span></h2>
     <form class="form-inline" action="/home">
@@ -12,6 +15,7 @@
         </div>
         <button id = "buscar" type="submit" class="btn btn-primary">Buscar</button>
     </form>
+
     <div class="table-responsive" th:fragment="tableOffers" id="tableOffers">
         <table class="table table-hover">
             <thead>

@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.Set;
 
@@ -44,7 +45,8 @@ public class OfferController {
     private OffersService offersService;
     @Autowired
     private UsersService usersService;
-
+    @Autowired
+    private HttpSession httpSession;
     @Autowired
     private AddOfferValidator addOfferValidator;
 
@@ -80,10 +82,15 @@ public class OfferController {
     public String homeBuy(Model model, @PathVariable Long id) {
         User activeUser = usersService.getUser();
         Offer offer = offersService.getOffer(id);
-
-        if(activeUser.getMoney()< offer.getAmount() || !offer.isAvailable() || activeUser.getOffers().contains(offer)){
+        if(activeUser.getMoney()< offer.getAmount()){
+            httpSession.setAttribute("enoughMoney",false);
             return "redirect:/home";
         }
+        else if(activeUser.getMoney()< offer.getAmount() || !offer.isAvailable() || activeUser.getOffers().contains(offer)){
+            httpSession.setAttribute("enoughMoney",true);
+            return "redirect:/home";
+        }
+
         offersService.updateOfferUser(activeUser,offer);
         usersService.addUser(activeUser);
         offersService.addOffer(offer);
